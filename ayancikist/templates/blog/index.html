@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
 
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    {% block content %}
-      Home Page
-    {% endblock %}
-  </body>
-</html>
+    {% if posts %}
+      {% for post in posts %}
+      {{ post.title}}
+      <hr>Author: {{ post.author}}, created {{ post.published_date | timesince}} ago<hr>
+      {{ post.text }}
+      {% endfor %}
+    {% else %}
+      <p>No post is available at the moment</p>
+    {% endif %}
+
+{% endblock %}
