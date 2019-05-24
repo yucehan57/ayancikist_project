@@ -4,7 +4,7 @@
 
     {% if posts %}
       {% for post in posts %}
-      {{ post.title}}
+      <a href="{% url 'post-detail' post.pk %}">{{ post.title}}</a>
       <hr>Author: {{ post.author}}, created {{ post.published_date | timesince}} ago<hr>
       {{ post.text }}
       {% endfor %}

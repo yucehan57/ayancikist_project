@@ -2,5 +2,7 @@
 {% load humanize %}
 
 {% block content %}
-  
+  <h2>{{object.title}}</h2><hr>
+  <p>Author: {{object.author}}, created {{object.published_date | timesince}} ago</p><hr>
+  <p>{{object.text}}</p>
 {% endblock %}

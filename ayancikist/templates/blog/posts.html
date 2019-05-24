@@ -8,7 +8,7 @@
   {% if post_list %}
   {% for post in post_list %}
   <li>
-  {{post.title}}<br>
+  <a href="{% url 'post-detail' post.pk %}">{{post.title}}</a><br>
   Author: {{post.author}}, created {{post.published_date | timesince}} ago</a><hr>
   {{post.text}}
   </li>
