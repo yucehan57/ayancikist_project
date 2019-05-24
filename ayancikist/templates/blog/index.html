@@ -4,6 +4,10 @@
 
     {% if posts %}
       {% for post in posts %}
+      {% if user.is_authenticated %}
+      <p>Hello {{user.username}},</p>
+      {% else %}
+      {% endif %}
       <a href="{% url 'post-detail' post.pk %}">{{ post.title}}</a>
       <hr>Author: {{ post.author}}, created {{ post.published_date | timesince}} ago<hr>
       {{ post.text }}
