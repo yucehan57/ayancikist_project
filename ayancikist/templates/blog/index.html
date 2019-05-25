@@ -1,19 +1,26 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
+<div class="card">
+  <div class="card-header">
+    Featured
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">What is new?</h5>
+    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
 
-    {% if posts %}
-      {% for post in posts %}
-      {% if user.is_authenticated %}
-      <p>Hello {{user.username}},</p>
-      {% else %}
-      {% endif %}
-      <a href="{% url 'post-detail' post.pk %}">{{ post.title}}</a>
-      <hr>Author: {{ post.author}}, created {{ post.published_date | timesince}} ago<hr>
-      {{ post.text }}
-      {% endfor %}
-    {% else %}
-      <p>No post is available at the moment</p>
-    {% endif %}
-
+<div class="card">
+  <div class="card-header">
+    Quote
+  </div>
+  <div class="card-body">
+    <blockquote class="blockquote mb-0">
+      <p>Ya sen kimsin ya!</p>
+      <footer class="blockquote-footer">YK in <cite title="Source Title">Seyahatname</cite></footer>
+    </blockquote>
+  </div>
+</div>
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
+from blog.models import Post
 
 def register(request):
     if request.method == 'POST':
@@ -52,3 +53,13 @@ def login(request):
             messages.error(request, 'Invalid credentials')
     else:
         return render(request, 'accounts/login.html')
+
+def logout(request):
+    auth.logout(request)
+    return redirect('blog-view')
+
+def profile(request):
+    context = {
+        
+    }
+    return render(request, 'accounts/profile.html', context)
