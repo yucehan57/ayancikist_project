@@ -64,10 +64,16 @@ WSGI_APPLICATION = 'ayancikist.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# pip install psycopg2
+# pip install psycopg2-binary
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ayancikist_db',
+        'USER': 'postgres',
+        'PASSWORD': 'YUCEHAn1992@',
+        'HOST': '',
+        'PORT': '',
     }
 }
 

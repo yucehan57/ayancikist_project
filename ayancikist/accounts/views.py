@@ -51,6 +51,7 @@ def login(request):
             return redirect('blog-view')
         else:
             messages.error(request, 'Invalid credentials')
+            return redirect('register')
     else:
         return render(request, 'accounts/login.html')
 
@@ -60,6 +61,6 @@ def logout(request):
 
 def profile(request):
     context = {
-        
+
     }
     return render(request, 'accounts/profile.html', context)

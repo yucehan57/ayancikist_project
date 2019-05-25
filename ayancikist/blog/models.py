@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 class Post(models.Model):
-    author          =   models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    title           =   models.CharField(max_length=200)
-    text            =   models.TextField()
-    published_date  =   models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+    published_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         """String representation"""
@@ -15,4 +15,5 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a detailed post"""
-        return reverse('post-detail', args=[str(self.id)])
+        return reverse('post-detail', kwargs={'username':self.user.username,
+                                                'pk':self.pk })
