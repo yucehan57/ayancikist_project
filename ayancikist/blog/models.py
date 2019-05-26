@@ -3,8 +3,11 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = models.TextField()
     published_date = models.DateTimeField(auto_now=True)
@@ -15,5 +18,8 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a detailed post"""
-        return reverse('post-detail', kwargs={'username':self.user.username,
-                                                'pk':self.pk })
+        return reverse('post-detail', kwargs={"pk": self.pk})
+
+    class Meta:
+        ordering = ['-published_date']
+        unique_together = ('user',)

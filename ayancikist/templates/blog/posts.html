@@ -9,7 +9,7 @@
   {% for post in post_list %}
   <li>
   <a href="{% url 'post-detail' post.pk %}">{{post.title}}</a><br>
-  Author: {{post.author}}, created {{post.published_date | timesince}} ago</a><hr>
+  Author: {{post.user}}, created {{post.published_date | timesince}} ago</a><hr>
   {{post.text}}
   </li>
   {% endfor %}
