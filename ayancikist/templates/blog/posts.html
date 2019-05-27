@@ -8,7 +8,7 @@
   {% if post_list %}
   {% for post in post_list %}
   <li>
-  <a href="{% url 'post-detail' post.pk %}">{{post.title}}</a><br>
+  <a href="{% url 'post-detail' pk=post.pk %}">{{post.title}}</a><br>
   Author: {{post.user}}, created {{post.published_date | timesince}} ago</a><hr>
   {{post.text}}
   </li>
@@ -18,4 +18,5 @@
   {% endif %}
 </ul>
 
+<button type="button" name="button"><a href="{% url 'add-post' %}">Click to add post</a></button>
 {% endblock %}
