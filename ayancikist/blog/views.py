@@ -7,6 +7,8 @@ from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 def index(request):
     # List published posts on home page
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
@@ -15,29 +17,18 @@ def index(request):
     }
     return render(request, 'blog/index.html', context)
 
-class PostListView(ListView):
-    model = Post
-    template_name = 'blog/posts.html'
 
-    def get_queryset(self):
-        # Filter by 'published_date' field of Post model
-        return Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+def blog_list(request):
+    # filter by published date of the model
+    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    paginator = Paginator(posts, 2)
+    page = request.GET.get('page')
+    paged_listings = paginator.get_page(page)
+    context = {
+        'posts': paged_listings,
+    }
+    return render(request, 'blog/posts.html', context)
 
-# def blog_list(request):
-#     # filter by published date of the model
-#     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-#     context = {
-#         'posts': posts,
-#     }
-#     return render(request, 'blog/posts.html', context)
-
-# class PostDetailView(DetailView):
-#     model = Post
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['now'] = timezone.now()
-#         return context
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -67,18 +58,16 @@ def create_post(request):
 
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    user = request.user.username
     if request.method == 'POST':
-        if user.is_authenticated:
-            form = CommentForm(request.POST)
+        form = CommentForm(request.POST)
 
-            if form.is_valid():
-                comment = form.save(commit=False)
-                comment.post = post
-                comment.save()
-                return redirect('post-detail', pk=pk)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect('post-detail', pk=pk)
 
     else:
         form = CommentForm()
     return render(request, 'blog/add_comment_to_post.html', {'form': form,
-                                                             'user': user,})
+                                                             })

@@ -10,6 +10,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = models.TextField()
+    slug = models.SlugField(unique=True)
     published_date = models.DateTimeField(auto_now=True)
 
     def summary(self):
@@ -30,7 +31,6 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-published_date']
-        unique_together = ('user',)
 
 
 class Comment(models.Model):
