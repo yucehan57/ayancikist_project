@@ -3,15 +3,12 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from django.contrib.auth import get_user_model
-User = get_user_model()
-
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    text = models.TextField()
-    slug = models.SlugField(unique=True)
-    published_date = models.DateTimeField(auto_now=True)
+    user            = models.ForeignKey(User, on_delete=models.CASCADE)
+    title           = models.CharField(max_length=200)
+    slug            = models.SlugField()
+    text            = models.TextField()
+    published_date  = models.DateTimeField(auto_now=True)
 
     def summary(self):
         """Return a summary for very long posts to
@@ -27,19 +24,19 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a detailed post"""
-        return reverse('post-detail', kwargs={"pk": self.pk})
+        return reverse('post-detail', kwargs={"slug": self.slug})
 
     class Meta:
         ordering = ['-published_date']
 
 
 class Comment(models.Model):
-    post = models.ForeignKey('blog.Post', on_delete=models.CASCADE,
+    post                = models.ForeignKey('blog.Post', on_delete=models.CASCADE,
                              related_name='comments')
-    user = models.CharField(max_length=200)
-    text = models.TextField()
-    created_date = models.DateTimeField(default=timezone.now)
-    approved_comment = models.BooleanField(default=False)
+    user                = models.CharField(max_length=200)
+    text                = models.TextField()
+    created_date        = models.DateTimeField(default=timezone.now)
+    approved_comment    = models.BooleanField(default=False)
 
     def approve_comment(self):
         self.approved_comment = True
