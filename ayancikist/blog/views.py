@@ -3,7 +3,7 @@ from .models import Post, Comment
 from django.utils import timezone
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, HttpResponseRedirect, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
@@ -106,10 +106,22 @@ def add_comment_to_post(request, slug):
     template_name = 'blog/add_comment_to_post.html'
     return render(request, template_name , {'form': form })
 
-@login_required
+
 def delete_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
-    post.delete()
-    return redirect('blog-view')
-    template_name = 'blog/delete_post.html'
-    return HttpResponseRedirect('Deleted')
+    # Should this logic stay here?
+    if request.user == post.user:
+        post.delete()
+        return redirect('blog-view')
+        template_name = 'blog/delete_post.html'
+        return HttpResponseRedirect('Deleted')
+    else:
+        return HttpResponse('You must be authorized to delete this post')
+
+def edit_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    if request.user == post.user:
+        ### EDIT FORM LOGIC
+        ### Create Edit Post FORM and store the new values.
+        ### Check for validity and save.
+        
