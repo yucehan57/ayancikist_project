@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <form method="POST">
+  <h6>Adding post as {{request.user}}</h6>
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{post_form.as_p}}
     <button type="submit" name="button">Submit</button>

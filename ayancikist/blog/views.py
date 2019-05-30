@@ -3,7 +3,7 @@ from .models import Post, Comment
 from django.utils import timezone
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, Http404
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
@@ -52,15 +52,17 @@ def create_post(request):
     # Isn't it supposed to be done by get_absolute_url?
     # Or, Should I add success_url = reverse_lazy('post-detail')?
     if request.method == 'POST':
-        post_form = PostForm(request.POST)
+        post_form = PostForm(request.POST, request.FILES)
 
         if post_form.is_valid():
             # Why do I exactly pass 'request' method here?
             # Is it to save post that is created by the request.POST form above?
-            print(post_form.cleaned_data)
-            title = post_form.cleaned_data['title'] 
-            post = post_form.save(request)
+            # P.S. next line used to read post = post_form.save(request)
+            post = post_form.save(commit=False)
+            post.user = request.user
             post.save()
+            slug = post.slug
+            return redirect('post-detail', slug=slug)
         else:
             print(post_form.errors)
     else:
@@ -94,6 +96,7 @@ def add_comment_to_post(request, slug):
             # comment.post --> post field of comment model.
             # is the purpose of doing the following to create a relation
             # between the comment and the post it is attached to?
+            comment.user = request.user
             comment.post = post
             comment.save()
             return redirect('post-detail', slug=slug)
@@ -102,3 +105,11 @@ def add_comment_to_post(request, slug):
         form = CommentForm()
     template_name = 'blog/add_comment_to_post.html'
     return render(request, template_name , {'form': form })
+
+@login_required
+def delete_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    post.delete()
+    return redirect('blog-view')
+    template_name = 'blog/delete_post.html'
+    return HttpResponseRedirect('Deleted')

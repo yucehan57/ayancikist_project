@@ -20,8 +20,12 @@
   <p>Nothing to show</p>
   {% endif %}
 </ul>
+{% if user.is_authenticated %}
+  <button type="button" name="button"><a href="{% url 'add-post' %}">Click to add post</a></button>
+{% else %}
+  <p><a href="{% url 'register' %}">You need to register to post. Click here to register</a></p>
+{% endif %}
 
-<button type="button" name="button"><a href="{% url 'add-post' %}">Click to add post</a></button>
 {# PAGINATION #}
 <div class="row">
 <div class="col-md-12">

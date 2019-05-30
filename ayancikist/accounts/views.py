@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages, auth
 from blog.models import Post
+from django.shortcuts import get_object_or_404
 
 def register(request):
     if request.method == 'POST':

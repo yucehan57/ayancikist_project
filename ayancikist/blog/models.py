@@ -12,19 +12,36 @@ class Post(models.Model):
     # we are in. i.e. 'posts' or 'comments' as will be seen below.
     user            = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     title           = models.CharField(max_length=200)
-    slug            = models.SlugField(unique=True, allow_unicode=True)
+    slug            = models.SlugField(unique=True)
     text            = models.TextField()
     published_date  = models.DateTimeField(auto_now=True)
+    # pip install Pillow
+    image           = models.ImageField(null=True, blank=True,
+                                        upload_to='photos/%Y/%m/%d/',)
+
 
     def summary(self):
         """Return a summary for very long posts to
         get a glimpse from admin panel"""
         return self.text[:100]
 
+    def _get_unique_slug(self):
+        """Assigns a number to the end of a given slug field to prevent
+        duplicated slug error. if title of a post is 'ayancik', and another
+        user creates another post with the same title, second posts' slug
+        is assigned a value: 'ayancik-2'"""
+        slug = slugify(self.title)
+        unique_slug = slug
+        num = 1
+        while Post.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        return unique_slug
+
     def save(self, *args, **kwargs):
-        # Automatically assign slug using title field
-        # by overriding save method
-        self.slug = slugify(self.title)
+        """Automatically assign slug to objects
+        by overriding save method"""
+        self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
 
     def pub_date_pretty(self):
@@ -51,11 +68,13 @@ class Comment(models.Model):
     # (field name that is named after the model to be given access to)
     # with whichever model you want to give access to
     post                = models.ForeignKey('blog.Post', on_delete=models.CASCADE,
-                             related_name='comments')
+                                            related_name='comments')
     user                = models.CharField(max_length=200)
     text                = models.TextField()
     created_date        = models.DateTimeField(default=timezone.now)
     approved_comment    = models.BooleanField(default=False)
+    # image               = models.ImageField(null=True, blank=True,
+    #                                         upload_to='photos/%Y/%m/%d/',)
 
     def approve_comment(self):
         self.approved_comment = True

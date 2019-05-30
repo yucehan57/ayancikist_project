@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h5>New comment:</h5>
+  {% if user.is_authenticated %}
+    <h5>Commenting as {{request.user}}</h5>
+  {% else %}
+    <h6>Commenting as anonymous user</h6>
+  {% endif %}
+
   <form method="POST" class='post-form'>
     {% csrf_token %}
     {{form.as_p}}

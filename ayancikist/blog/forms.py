@@ -1,6 +1,10 @@
 from django import forms
 from .models import Post, Comment
 
+# when to use forms.Form and forms.ModelForm?
+# forms.Form -> when DB is not to be directly impacted (Contact Form)
+# forms.ModelForm -> when DB is directly impacted (User Registration )
+
 class PostForm(forms.ModelForm):
     # A form to have users add posts using post.user, post.title, and post.text
     # fields of the Post model
@@ -9,8 +13,7 @@ class PostForm(forms.ModelForm):
     # How do I by default assign the user(author) as authenticated user?
     class Meta:
         model = Post
-        fields = ['user', 'title', 'text',]
-
+        exclude = ('user', 'slug',)
 
 class CommentForm(forms.ModelForm):
     # A form to leave comments for posts.
@@ -19,4 +22,10 @@ class CommentForm(forms.ModelForm):
     # user when authenticated rather than giving end user the right to choose.
     class Meta:
         model = Comment
-        fields = ('user', 'text',)
+        fields = ('text',)
+
+# class AnanymousCommentForm(forms.ModelForm):
+#     # Commenting when not logged in will ask for a nickname
+#     class Meta:
+#         model = Comment
+#         fields = ('user', 'text',)

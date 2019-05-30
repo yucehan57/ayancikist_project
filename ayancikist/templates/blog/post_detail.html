@@ -7,10 +7,16 @@
     <p>{{post.user}}</p>
   <hr>
   <br>
-  <p>{{post.text}}</p>
+    <p>{{post.text}}</p>
   <hr>
   <p>
   <a class="btn btn-default" href="{% url 'add-comment' post.slug %}">Add comment</a>
+  {% if user.is_authenticated %}
+    <p><a href="{% url 'delete-post' post.slug %}">Delete this post</a></p>
+  {% else %}
+    <p></p>
+  {% endif %}
+
   {% for comment in post.comments.all %}
       <p>
       {{comment.created_date}}
