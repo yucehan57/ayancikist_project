@@ -60,7 +60,7 @@
             class='nav-item'
           {% endif %}
         >
-            <a href="{% url 'profile' %}" class="nav-link">Logged in as {{user.username}}</a>
+            <a href="{% url 'profile' user.id %}" class="nav-link">Logged in as {{user.username}}</a>
         </li>
         {% else %}
         <li

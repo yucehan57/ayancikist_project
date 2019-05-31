@@ -7,6 +7,6 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     # 'profile/<str:slug> to go users profile'
     # slug to be username that is unique.
-    path('profile', views.profile, name='profile'),
+    path('profile/<int:user_id>', views.profile, name='profile'),
 
 ]

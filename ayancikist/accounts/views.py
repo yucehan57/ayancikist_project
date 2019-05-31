@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages, auth
 from blog.models import Post
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 def register(request):
     if request.method == 'POST':
@@ -60,7 +61,7 @@ def logout(request):
     auth.logout(request)
     return redirect('blog-view')
 
-def profile(request):
+def profile(request, user_id):
     # pass 'slug' field for 'User' model above after customizing
     # the model. Then grab the user:
     # user = get_object_or_404(User, slug=slug)
@@ -71,7 +72,14 @@ def profile(request):
     # In a new tab ('see my comments') -> user.comments
     # to do above, have a related_name='comments' field attribute
     # ready in Comment model for a relation betweel two models.
-    context = {
 
+    # navbar 'logged in as {{}}' should be modified.
+    user = get_object_or_404(User, id=user_id)
+    # Query user's posts
+    posts = user.posts.all()
+
+    context = {
+        'posts': posts,
+        'user': user,
     }
     return render(request, 'accounts/profile.html', context)

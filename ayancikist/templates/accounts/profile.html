@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h6>Welcome, {{user.username}}</h6>
+  <h6>Welcome, {{user}}</h6>
+  <ul>
+    {% for post in posts %}
+        <li>{{ post }}</li>
+    {% endfor %}
+  </ul>
+
 {% endblock %}
