@@ -13,7 +13,7 @@ class PostForm(forms.ModelForm):
     # How do I by default assign the user(author) as authenticated user?
     class Meta:
         model = Post
-        exclude = ('user', 'slug',)
+        exclude = ('user', 'slug', 'image')
 
 class CommentForm(forms.ModelForm):
     # A form to leave comments for posts.
@@ -23,6 +23,12 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('text',)
+
+
+class PostUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        exclude = ('user', 'slug', 'image')
 
 # class AnanymousCommentForm(forms.ModelForm):
 #     # Commenting when not logged in will ask for a nickname

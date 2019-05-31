@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <p>Deleting post as {{ request.user }}</p>
+  <form method="POST">
+    {% csrf_token %}
+    {{ edit_form.as_p }}
+    <button type="submit" name="button">Update</button>
+
+    <!-- Would rather have this available in above form -->
+    <p>Original Title: {{original_post.title}}</p>
+    <p>Original Text: {{original_post.text}}</p>
+  </form>
+{% endblock %}

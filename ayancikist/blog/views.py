@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Post, Comment
 from django.utils import timezone
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, PostUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, HttpResponseRedirect, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -108,6 +108,8 @@ def add_comment_to_post(request, slug):
 
 
 def delete_post(request, slug):
+    # Maybe have template for: "Sure you want to delete?"
+    # 'blog/delete_post_confirm.html'
     post = get_object_or_404(Post, slug=slug)
     # Should this logic stay here?
     if request.user == post.user:
@@ -118,10 +120,67 @@ def delete_post(request, slug):
     else:
         return HttpResponse('You must be authorized to delete this post')
 
+@login_required
 def edit_post(request, slug):
+    # How to tell front end that an edit took place
+    # and record the time of edit. So that I could have a field
+    # on the front end stating, i.e., edited: May 31, 2019 - 6:48pm
+
+    # get the original post
+    original_post = get_object_or_404(Post, slug=slug)
+    # if user requesting the edit is the post author:
+    if request.user == original_post.user:
+        # if user filled out the form and pressed submit:
+        if request.method == 'POST':
+            edit_form = PostUpdateForm(request.POST)
+            # request.POST returns a Query Dictionary
+            # so that we can grab the values using the key
+            # and assign values to variables
+            edited_title = request.POST['title']
+            edited_text  = request.POST['text']
+            print(request.POST)
+            if edit_form.is_valid():
+                # original_post = edit_form.save(commit=False)
+                original_post.user  = request.user
+                original_post.title = edited_title
+                original_post.text  = edited_text
+                original_post.save()
+                # original_post.delete()
+                # redirect to edited post detail
+                # when title is updated, will slug change automatically?
+                # or do I need to handle it at save?
+                # Answered: Yes, it is automatically handled on the back end.
+                slug = original_post.slug
+                print(slug)
+                print(original_post._meta.get_fields())
+                return redirect('post-detail', slug=slug)
+
+        else:
+            edit_form = PostUpdateForm()
+    else:
+        return HttpResponse('You are not authorized to perform this action')
+    template_name = 'blog/edit_post.html'
+    context = {
+        'edit_form': edit_form,
+        'original_post': original_post,
+    }
+    return render(request, template_name, context)
+
+
+def edit_post_comment(request, slug):
+    # grab the post the comment belongs to
     post = get_object_or_404(Post, slug=slug)
-    if request.user == post.user:
-        ### EDIT FORM LOGIC
-        ### Create Edit Post FORM and store the new values.
-        ### Check for validity and save.
-        
+    # comment time will change, affecting the order of the
+    # comments. Have superuser be able to approve, delete
+    # all the comments. when deleted by superuser, maybe say:
+    # "deleted because of <edit reason>"
+    # since there has to be a user for every comment and post,
+    # just like we did above functions, we need to specify:
+    # post.user = request.user and/or comment.user = request.user
+    # this we do, because we don't pass 'user' field in forms (Comment or Post)
+    pass
+
+def add_comment_to_comment(request, slug):
+    # comment.user = request.user
+    # comment.post = post
+    pass

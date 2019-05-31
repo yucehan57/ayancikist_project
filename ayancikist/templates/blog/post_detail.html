@@ -4,15 +4,19 @@
 {% block content %}
   <h6>{{post.title}}</h6>
     <p>{{post.pub_date_pretty}}</p>
+    <p>{% if post_edited_at %}
+      {{post_edited_at}}
+    {% endif %}<p>
     <p>{{post.user}}</p>
   <hr>
   <br>
     <p>{{post.text}}</p>
   <hr>
   <p>
-  <a class="btn btn-default" href="{% url 'add-comment' post.slug %}">Add comment</a>
+  <a href="{% url 'add-comment' post.slug %}">Add comment</a>
   {% if request.user == post.user %}
-    <p><a href="{% url 'delete-post' post.slug %}">Delete this post</a></p>
+    <p><a href="{% url 'delete-post' post.slug %}">Delete Post</a></p>
+    <p><a href="{% url 'edit-post' post.slug %}">Edit Post</a></p>
   {% else %}
     <p></p>
   {% endif %}

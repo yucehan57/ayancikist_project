@@ -61,6 +61,16 @@ def logout(request):
     return redirect('blog-view')
 
 def profile(request):
+    # pass 'slug' field for 'User' model above after customizing
+    # the model. Then grab the user:
+    # user = get_object_or_404(User, slug=slug)
+    # user.posts will list user's posts in profile page
+    # (notice that posts is a field attribute in 'user' ForeignKey
+    # field in blog.models 'Post'
+
+    # In a new tab ('see my comments') -> user.comments
+    # to do above, have a related_name='comments' field attribute
+    # ready in Comment model for a relation betweel two models.
     context = {
 
     }
