@@ -14,9 +14,9 @@ def blog_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
     paginator = Paginator(posts, 3)
     page = request.GET.get('page')
-    paged_listings = paginator.get_page(page)
+    paged_posts = paginator.get_page(page)
     context = {
-        'posts': paged_listings,
+        'posts': paged_posts,
     }
     return render(request, 'blog/posts.html', context)
 
@@ -104,7 +104,10 @@ def add_comment_to_post(request, slug):
     else:
         form = CommentForm()
     template_name = 'blog/add_comment_to_post.html'
-    return render(request, template_name , {'form': form })
+    context = {
+        'form': form,
+    }
+    return render(request, template_name , context)
 
 
 def delete_post(request, slug):
@@ -183,4 +186,16 @@ def edit_post_comment(request, slug):
 def add_comment_to_comment(request, slug):
     # comment.user = request.user
     # comment.post = post
+    pass
+
+@login_required
+def approve_comment(self, pk):
+    # grab the comment object using its slug field
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.approve_comment()
+    return redirect('post-detail', slug=comment.post.slug)
+
+
+def delete_comment(self, pk):
+    comment = get_object_or_404(Comment, pk=pk)
     pass

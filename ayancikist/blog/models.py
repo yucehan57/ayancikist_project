@@ -25,6 +25,10 @@ class Post(models.Model):
         get a glimpse from admin panel"""
         return self.text[:100]
 
+    def approved_comments(self):
+        # query only approved comments
+        return self.comments.filter(approved_comment=True)
+
     def _get_unique_slug(self):
         """Assigns a number to the end of a given slug field to prevent
         duplicated slug error. if title of a post is 'ayancik', and another
@@ -73,8 +77,30 @@ class Comment(models.Model):
     text                = models.TextField()
     created_date        = models.DateTimeField(default=timezone.now)
     approved_comment    = models.BooleanField(default=False)
+    # slug                = models.SlugField(unique=True, null=True, blank=True)
     # image               = models.ImageField(null=True, blank=True,
     #                                         upload_to='photos/%Y/%m/%d/',)
+
+    # """Is slugifying comment text necessary?"""
+    # def _get_unique_slug(self):
+    #     # Since slug is derived from comment's first 15 characters,
+    #     # there may, though unlikey, two comments that start with
+    #     # same characters. To prevent duplicate slug values in two seperate
+    #     # comment objects, we need to define a method to create unique
+    #     # slug fields for different comment instances.
+    #     slug = slugify(self.text)[:15]
+    #     unique_slug = slug
+    #     num = 0
+    #     while Comment.objects.filter(slug=unique_slug).exists:
+    #         unique_slug = "{}-{}".format(slug, num)
+    #         num += 1
+    #         return unique_slug
+    #
+    # def save(self, *args, **kwargs):
+    #     # Override same method to assign unique slug fields to every different
+    #     # comment object
+    #     self.slug = self._get_unique_slug()
+    #     super().save(*args, **kwargs)
 
     def approve_comment(self):
         self.approved_comment = True

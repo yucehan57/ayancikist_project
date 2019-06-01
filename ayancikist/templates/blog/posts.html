@@ -7,17 +7,20 @@
 <ul>
   {% if posts %}
   {% for post in posts %}
-  <li>
-  <a href="{% url 'post-detail' post.slug %}">{{post.title}}</a><br>
-  Author: {{post.user}}, created {{post.published_date | timesince}} ago</a>
-  <hr>
-  {{post.text}}
-  </li>
-  <p><a href="{% url 'post-detail' post.slug %}">
-    Comments: {% if post.comments %}{{post.comments.count}}{% endif %}</a></p>
+    <li>
+      <a href="{% url 'post-detail' post.slug %}">{{post.title}}</a><br>
+      Author: {{post.user}}, created {{post.published_date | timesince}} ago</a>
+      <hr>
+      {{post.text}}
+    </li>
+      <p><a href="{% url 'post-detail' post.slug %}">
+        Comments:
+        {% if post.comments %}
+          {{post.comments.approved_comment.count}}
+        {% endif %}</a></p>
   {% endfor %}
   {% else %}
-  <p>Nothing to show</p>
+    <p>Nothing to show</p>
   {% endif %}
 </ul>
 {% if user.is_authenticated %}
