@@ -198,4 +198,5 @@ def approve_comment(self, pk):
 
 def delete_comment(self, pk):
     comment = get_object_or_404(Comment, pk=pk)
-    pass
+    comment.delete()
+    return redirect('post-detail', slug=comment.post.slug)

@@ -26,24 +26,55 @@
     1) If comment.user is request.user -> user can see unapproved cooment  %}
     2) If user.is_superuser -> user can see, and approve comment
     3) If user is neither the owner of comment or is_superuser, s/he can...
-    4) neither approve, nor see comment.<-->
-     {% if user.is_authenticated or comment.approved_comment %}
+    4) neither approve, nor see comment.
+
+    PROBLEM ENCOUNTERED: -Logic at this point is flawed:
+      a) When approve comment, there is a duplicate text rendering
+         (same comment is seen twice)
+      b) if request.user == comment.user -> is not able to delete his/her
+         own either approved or unapproved comments.
+      * Follow below login step by step using pen & paper, rewrite the code.
+        (each user should be able to delete comments though not be able approve)
+    -->
+    {% if user.is_superuser and not comment.approved_comment %}
       <div class="comment">
         <div class="date">
         {{comment.created_date}}
         <strong>{{comment.user}}</strong>
         <p>{{comment.text | linebreaks }}</p>
-        <!--If comment is not yet approved-->
-          {% if not comment.approved_comment %}
-            <!--If request.user == comment.user show comment only visible to him and is_superuser
-                But don't show user 'approve' button that is only visible to superuser-->
-              <a href="{% url 'approve-comment' comment.pk %}">Approve comment</a>
-          {% endif %}
+        <a href="{% url 'approve-comment' comment.pk %}">Approve comment</a>
+        <a href="{% url 'delete-comment' comment.pk %}">Delete comment</a>
         </div>
       </div>
-    {% endif %}
-  {% empty %}
-      <p>There is no comment</p>
+     {% elif request.user == comment.user and not comment.approved_comment %}
+       <div class="comment">
+         <div class="date">
+         {{comment.created_date}}
+         <strong>{{comment.user}}</strong>
+         <p>{{comment.text | linebreaks }}</p>
+         <a href="{% url 'delete-comment' comment.pk %}">Delete comment</a>
+         </div>
+       </div>
+      {% elif comment.approved_comment %}
+        {% if user.is_superuser %}
+        <div class="comment">
+          <div class="date">
+          {{comment.created_date}}
+          <strong>{{comment.user}}</strong>
+          <p>{{comment.text | linebreaks }}</p>
+          <a href="{% url 'delete-comment' comment.pk %}">Delete comment</a>
+          </div>
+        </div>
+        {% endif %}
+        <div class="comment">
+          <div class="date">
+          {{comment.created_date}}
+          <strong>{{comment.user}}</strong>
+          <p>{{comment.text | linebreaks }}</p>
+          </div>
+        </div>
+      {% endif %}
+    {% empty %}
+      <p>No comments left</p>
   {% endfor %}
-
 {% endblock %}
