@@ -4,16 +4,31 @@ from django.contrib import messages, auth
 from blog.models import Post
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from .forms import UserProfileForm
 
 def register(request):
+    # Right now user registration forms is created on the front-end
+    # register.html by using labels and inputs corresponding for
+    # those labels. This could be changed to user
+    # UserCreationForm in 'accounts.forms'.
     if request.method == 'POST':
         # Get values from the registration form
+        # (front-end data collection)
+        # request.POST['first_name'] is:
+        # 'first_name' corresponds to an input name
+        # which also has a label on register.html
+        # we grab that data and assign data that is grabbed with
+        # POST request to 'first_name' variable name
         first_name  =   request.POST['first_name']
         last_name   =   request.POST['last_name']
         username    =   request.POST['username']
         email       =   request.POST['email']
         password    =   request.POST['password']
         password2   =   request.POST['password2']
+
+        # we pass in values from request.POST (which is a dictionary)
+        # to populate the UserProfileForm.
+        user_profile_form = UserProfileForm(request.POST)
 
         # Check if passwords match
         if password == password2:
