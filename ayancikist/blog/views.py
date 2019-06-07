@@ -190,7 +190,7 @@ def add_comment_to_comment(request, slug):
 
 @login_required
 def approve_comment(self, pk):
-    # grab the comment object using its slug field
+    # grab the comment object by its pk field
     comment = get_object_or_404(Comment, pk=pk)
     comment.approve_comment()
     return redirect('post-detail', slug=comment.post.slug)

@@ -4,7 +4,8 @@ from django.contrib import messages, auth
 from blog.models import Post
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from .forms import UserProfileForm
+from .forms import UserProfileForm, ExtendedUserCreationForm
+from userprofile.models import UserProfile
 
 def register(request):
     # Right now user registration forms is created on the front-end
@@ -54,6 +55,44 @@ def register(request):
     else:
         return render(request, 'accounts/register.html')
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = ExtendedUserCreationForm(request.POST)
+#         profile_form = UserProfileForm(request.POST)
+#
+#         if form.is_valid() and profile_form.is_valid():
+#             # return a user from the form save
+#             user = form.save()
+#             # we pass 'commit=False' to not save the profile
+#             # that we create using the profile_form to the database
+#             # right away
+#             profile = profile_form.save(commit=False)
+#             # There is a 'OneToOneField' relation with the profile user
+#             # and user instance of User model (defined in userprofile.models)
+#             # since UserCreationForm and UserProfileForm are two different
+#             # forms, we define who the user is for UserProfile model.
+#             profile.user = user
+#             profile.save()
+#
+#             username = form.cleaned_data.get['username']
+#             password = form.cleaned_data.get['password']
+#             # built-in authentication (from django.contrib import auth)
+#             user = auth.authenticate(username=username, password=password)
+#             # Automatically login registered user with built-in Login
+#             # Uncomment the following line if that's what you want:
+#             auth.login(request, user)
+#             return redirect('blog-view')
+#     else:
+#         # Serve empty form as long as it is a 'GET' request
+#         form = ExtendedUserCreationForm()
+#         profile_form = UserProfileForm()
+#
+#     context = {
+#         'form': form,
+#         'profile_form': profile_form,
+#     }
+#     return render(request, 'accounts/register.html', context)
+
 def login(request):
     if request.method == 'POST':
         # Login Logic
@@ -76,7 +115,7 @@ def logout(request):
     auth.logout(request)
     return redirect('blog-view')
 
-def profile(request, user_id):
+def profile(request, slug):
     # pass 'slug' field for 'User' model above after customizing
     # the model. Then grab the user:
     # user = get_object_or_404(User, slug=slug)
@@ -89,12 +128,12 @@ def profile(request, user_id):
     # ready in Comment model for a relation betweel two models.
 
     # navbar 'logged in as {{}}' should be modified.
-    user = get_object_or_404(User, id=user_id)
+    userprofile = get_object_or_404(UserProfile, slug=slug)
     # Query user's posts
-    posts = user.posts.all()
+    posts = userprofile.user.posts.all()
 
     context = {
         'posts': posts,
-        'user': user,
+        'user': userprofile,
     }
     return render(request, 'accounts/profile.html', context)
