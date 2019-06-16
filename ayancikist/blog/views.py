@@ -23,7 +23,7 @@ def blog_list(request):
 
 def post_detail(request, slug):
     # Get request for the Post object is sent using the slug field of the
-    # object. '/blog/"what-is-slug"'. Is an example. Then entered slug for the
+    # object. '/blog/"what-is-slug"' is an example. Then entered slug for the
     # requested object is passed as an argument to the post_detail view so
     # that we can fetch the requested object from the database.
     # get_object_or_404 takes two arguments. One is what object model we need

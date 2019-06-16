@@ -12,6 +12,7 @@ def register(request):
             form.save()
             # validated data will be in:
             # 'form.cleaned_data' dictionary
+            # fetch the username from filled-in form
             username = form.cleaned_data.get('username')
             # fetch the created user so we can pass in the user
             # associated with this registration while creating
@@ -19,6 +20,8 @@ def register(request):
             user = get_object_or_404(User, username=username)
             # create a userprofile with only an automatically
             # assigned (based on username) slug field
+            # User and UserProfile models have a 1-1 relation. Thus user field
+            # of User model will correspond to UserProfile's 'user' field.
             user_profile = UserProfile.objects.create(user=user, slug=username)
             # messages.success(request, f'Account created for {username}.')
             return redirect('blog-view')
@@ -33,6 +36,7 @@ def register(request):
     return render(request, 'accounts/register.html', context)
 
 def login(request):
+    # Consider using built-in login logic
     if request.method == 'POST':
         # Login Logic
         username = request.POST['username']
