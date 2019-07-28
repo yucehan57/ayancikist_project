@@ -32,6 +32,10 @@ Environment is set up. To proceed, you begin by making necessary migrations:
 
     $ python manage.py makemigrations
     $ python manage.py migrate
+
+Install dependencies:
+
+    $ pip install -r requirements.txt
     
 And, run the server:
 
