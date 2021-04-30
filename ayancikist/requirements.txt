@@ -31,5 +31,5 @@ requests==2.22.0
 SecretStorage==2.3.1
 six==1.11.0
 texttable==0.9.1
-urllib3==1.25.3
+urllib3==1.25.8
 websocket-client==0.44.0
